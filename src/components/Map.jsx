@@ -10,7 +10,7 @@ const containerStyle = {
 export const MapComponent = ({ center, setCenter, markers, zoom }) => {
 
   return (
-    <LoadScript googleMapsApiKey="google-maps-key">
+    <LoadScript googleMapsApiKey="AIzaSyDK9JVZW6-mD4o22D-UeTe5maCN61tX1Qc">
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
         {markers.map((marker, index) => (
           <Marker key={index} position={marker.position} title={`${marker?.points}`} />
