@@ -1,19 +1,35 @@
 import proj4 from 'proj4';
 import { useState } from 'react';
 import './App.css';
-import { DetailCard, MapComponent, NavBar, Suggessions } from './components';
+import { DetailCard, LogoutButton, MapComponent, NavBar, Sidebar, Suggessions } from './components';
 import { data } from "./Data/index";
 
+/**
+ * App component is displaying a grid and all the components in it
+ * @returns jsx
+ */
 function App() {
-
   const utm32Parameters = '+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs';
-
-  // Perform UTM to Latitude-Longitude conversion
+  /**
+   * Perform UTM to Latitude-Longitude conversion 
+   */
   const utmProjection = data.map((dataPoint) => {
-    const point = proj4(utm32Parameters, 'WGS84', [dataPoint.easting, dataPoint.northing]);
+    let point = null;
+    try {
+      point = proj4(utm32Parameters, 'WGS84', [dataPoint.easting, dataPoint.northing]);
+    }
+    catch (error) {
+      console.log("There is a problem in project4 conversion")
+      return {
+        position: { lng: 0.35406121544418945, lat: 6.650938396438645 }
+      }
+    }
     return { position: { lng: point[0], lat: point[1] }, points: dataPoint.points, layers: dataPoint.layerAmount, depth: dataPoint.depth }
   })
 
+  /**
+   * mapCenter is the state responsible for changing the map's center and markers
+   */
   const [mapCenter, setMapCenter] = useState({
     lng:
       5.98458091645728, lat: 1.786278228453091,
@@ -21,6 +37,10 @@ function App() {
     depth: 5,
     layers: 3,
   });
+
+  /**
+   * mapZoom is responsible for the zoom changes in the maps 
+   */
   const [mapZoom, setMapZoom] = useState(7);
 
   return (
@@ -31,28 +51,13 @@ function App() {
           <div className='row-start-0 row-span-4'>
             <div>
               <ul className="menu bg-gray-800 w-40 rounded-box">
-                {
-                  data.map((point, index) => {
-                    return <li className='hover:bg-gray-700' onClick={(event) => {
-                      setMapZoom(6)
-                      setTimeout(() => {
-                        setMapCenter({ ...utmProjection[index]?.position, points: utmProjection[index]?.points, depth: utmProjection[index]?.depth, layers: utmProjection[index]?.layers })
-                        setMapZoom(10)
-                      }, 500);
-
-                    }}>
-                      <strong><p className='text-white hover:text-blue-500'>{point.points}</p></strong></li>
-                  })
-                }
+                <Sidebar data={data} mapCenter={mapCenter} utmProjection={utmProjection} setMapCenter={setMapCenter} setMapZoom={setMapZoom} />
               </ul>
             </div>
           </div>
         </div>
         <div className="grid row-start-4 row-span-1 text-white hover:text-blue-500 content-end">
-          <button className="btn btn-outline">
-            Logout
-            <svg class="h-8 w-8 text-grey" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />  <path d="M7 12h14l-3 -3m0 6l3 -3" /></svg>
-          </button>
+          <LogoutButton />
         </div>
         <div className="row-start-0 row-span-3 col-start-2 col-span-6 ml-3 mr-3">
           <div className="rounded-lg">
