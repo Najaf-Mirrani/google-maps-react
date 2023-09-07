@@ -13,15 +13,23 @@ const containerStyle = {
  * @returns 
  */
 export const MapComponent = ({ center, setCenter, markers, zoom }) => {
-
+  const mapApiKey = null;
   return (
-    <LoadScript googleMapsApiKey="maps-api-key">
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
-        {markers.map((marker, index) => (
-          <Marker key={index} position={marker.position} title={`${marker?.points}`} />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+    <>
+      {
+        mapApiKey ?
+        <h2 className="text-slate-100">Please provide google map key in the code</h2>
+        : 
+        <LoadScript googleMapsApiKey="maps-api-key">
+          <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
+            {markers.map((marker, index) => (
+              <Marker key={index} position={marker.position} title={`${marker?.points}`} />
+            ))}
+          </GoogleMap>
+        </LoadScript>
+      
+      }
+    </>
   );
 };
 
