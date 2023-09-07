@@ -17,17 +17,16 @@ export const MapComponent = ({ center, setCenter, markers, zoom }) => {
   return (
     <>
       {
-        mapApiKey ?
-        <h2 className="text-slate-100">Please provide google map key in the code</h2>
-        : 
+        mapApiKey ? 
         <LoadScript googleMapsApiKey="maps-api-key">
           <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
             {markers.map((marker, index) => (
               <Marker key={index} position={marker.position} title={`${marker?.points}`} />
             ))}
           </GoogleMap>
-        </LoadScript>
-      
+          </LoadScript>
+          : 
+          <h2 className="text-slate-100">Please provide google map key in the code</h2>
       }
     </>
   );
